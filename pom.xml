@@ -4,28 +4,13 @@
 
     <groupId>guru.springframework</groupId>
     <artifactId>spring-cloud-contract-oa3</artifactId>
-    <version>2.1.2.1-SNAPSHOT</version>
+    <version>3.1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>spring-cloud-contract-oa3</name>
     <description>Spring Cloud Contract OpenAPI 3.0</description>
 
-    <url>https://github.com/springframeworkguru/spring-cloud-contract-oa3</url>
-
-    <organization>
-        <name>Spring Framework Guru</name>
-        <url>https://springframework.guru/</url>
-    </organization>
-
-    <developers>
-        <developer>
-            <id>jt</id>
-            <name>John Thompson</name>
-            <email>john@springframework.guru</email>
-        </developer>
-    </developers>
-
-    <inceptionYear>2018</inceptionYear>
+    <url>https://github.com/mzielinski/spring-cloud-contract-oa3</url>
 
     <licenses>
         <license>
@@ -42,10 +27,10 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <sonar.sources>src/main/java,src/main/groovy</sonar.sources>
         <sonar.tests>src/test/java,src/test/groovy</sonar.tests>
-        <spring.cloud.contract.version>2.1.2.RELEASE</spring.cloud.contract.version>
-        <spock-spring.version>1.0-groovy-2.4</spock-spring.version>
-        <spock-global-unroll.version>0.5.1</spock-global-unroll.version>
-        <groovy.version>2.5.8</groovy.version>
+        <spring.cloud.contract.version>3.1.1</spring.cloud.contract.version>
+        <spock-spring.version>2.1-groovy-3.0</spock-spring.version>
+        <groovy.version>3.0.9</groovy.version>
+        <swagger-parser.version>2.0.30</swagger-parser.version>
     </properties>
 
     <dependencies>
@@ -57,7 +42,7 @@
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser</artifactId>
-            <version>2.0.13</version>
+            <version>${swagger-parser.version}</version>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
@@ -91,12 +76,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>info.solidsoft.spock</groupId>
-            <artifactId>spock-global-unroll</artifactId>
-            <version>${spock-global-unroll.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <prerequisites>
@@ -104,21 +83,21 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:git:git@github.com:springframeworkguru/spring-cloud-contract-oa3.git</connection>
-        <developerConnection>scm:git:git@github.com:springframeworkguru/spring-cloud-contract-oa3.git
+        <connection>scm:git:git@github.com:mzielinski/spring-cloud-contract-oa3.git</connection>
+        <developerConnection>scm:git:git@github.com:mzielinski/spring-cloud-contract-oa3.git
         </developerConnection>
-        <url>https://github.com/springframeworkguru/spring-cloud-contract-oa3</url>
+        <url>https://github.com/mzielinski/spring-cloud-contract-oa3</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/springframeworkguru/spring-cloud-contract-oa3/issues</url>
+        <url>https://github.com/mzielinski/spring-cloud-contract-oa3/issues</url>
     </issueManagement>
 
     <ciManagement>
         <system>CircleCi</system>
-        <url>https://circleci.com/gh/springframeworkguru/spring-cloud-contract-oa3</url>
+        <url>https://circleci.com/gh/mzielinski/spring-cloud-contract-oa3</url>
     </ciManagement>
 
     <build>
@@ -127,11 +106,16 @@
                 <plugin>
                     <groupId>org.codehaus.gmavenplus</groupId>
                     <artifactId>gmavenplus-plugin</artifactId>
-                    <version>1.6.1</version>
+                    <version>1.13.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M6</version>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
@@ -149,17 +133,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -222,95 +195,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.7.1</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <configuration>
-                    <flattenMode>ossrh</flattenMode>
-                </configuration>
-                <executions>
-                    <!-- enable flattening -->
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <!-- ensure proper cleanup -->
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 </project>

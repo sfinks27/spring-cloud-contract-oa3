@@ -8,11 +8,8 @@ import groovy.util.logging.Slf4j
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.parser.OpenAPIV3Parser
 import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.ContractConverter
-import org.springframework.context.ApplicationContext
-
 
 /**
  * Created by John Thompson on 5/24/18.
@@ -20,38 +17,28 @@ import org.springframework.context.ApplicationContext
 @Slf4j
 class OpenApiContractConverter implements ContractConverter<Collection<PathItem>> {
 
-    public static final OpenApiContractConverter INSTANCE = new OpenApiContractConverter()
-    public static final String SERVICE_NAME_KEY = "scc.enabled.servicenames"
+    public static final String SERVICE_NAME_KEY = "scc.enabled.service-names"
 
     private YamlToContracts yamlToContracts = new YamlToContracts()
-
-    @Autowired
-    private ApplicationContext appContext
 
     @Override
     boolean isAccepted(File file) {
 
         try {
             def spec = new OpenAPIV3Parser().read(file.path)
-
-            if (spec == null) {
-                log.debug("Spec Not Found")
-                throw new RuntimeException("Spec not found")
+            if (spec == null || spec.paths.size() == 0) {
+                throw new IllegalArgumentException("Spec ${file.path} not found")
             }
 
-            if (spec.paths.size() == 0) { // could toss NPE, which is also invalid spec
-                log.debug("No Paths Found")
-                throw new RuntimeException("No paths found")
-            }
+            boolean contractsFound = false
 
-            def contractsFound = false
             //check spec for contracts
             spec.paths.each { k, v ->
                 if (!contractsFound) {
                     v.readOperations().each { operation ->
                         if (operation.extensions) {
                             def contracts = operation.extensions."x-contracts"
-                            if (contracts != null && contracts.size > 0) {
+                            if (contracts != null && contracts.size() > 0) {
                                 contractsFound = true
                             }
                         }
@@ -61,8 +48,8 @@ class OpenApiContractConverter implements ContractConverter<Collection<PathItem>
 
             return contractsFound
         } catch (Exception e) {
-            log.error("Unexpected error in reading contract file")
-            log.error(e.message)
+            log.error('Unexpected error in reading contract file')
+            log.error(e.message, e)
             return false
         }
     }
